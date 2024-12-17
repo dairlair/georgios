@@ -10,7 +10,7 @@ run:
 build:
 	# GOOS=linux GOARCH=amd64 go build -o dist/georgios
 	# zip dist/georgios.zip dist/georgios
-	zip dist/georgios.zip main.go go.mod
+	zip -ur dist/georgios.zip main.go go.mod  pkg
 
 .PHONY: deploy
 deploy: build
@@ -22,6 +22,6 @@ deploy: build
     	--execution-timeout 1s \
     	--environment VAR1=value1,VAR2=value2 \
     	--source-path dist/georgios.zip
-	# yc serverless function invoke --name georgios --data '{"name": "Alexander"}'
+	yc serverless function invoke --name georgios --data '{"name": "Alexander"}'
 
 
