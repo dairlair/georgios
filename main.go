@@ -4,18 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
-	"github.com/dairlair/georgios/pkg/yandexalicesdk"
 )
 
-func Handler(ctx context.Context, input []byte) (*yandexalicesdk.Response, error) {
-	var event yandexalicesdk.Event
+func Handler(ctx context.Context, input []byte) (*Response, error) {
+	var event Event
 	err := json.Unmarshal(input, &event)
 	if err != nil {
-		return &yandexalicesdk.Response{
+		return &Response{
 			Version: event.Version,
 			Session: event.Session,
-			Result: yandexalicesdk.Result{
+			Result: Result{
 				Text:       fmt.Sprintf("an error has occurred when parsing event: %v", err),
 				EndSession: false,
 			},
@@ -27,10 +25,10 @@ func Handler(ctx context.Context, input []byte) (*yandexalicesdk.Response, error
 		text = event.Request.OriginalUtterance
 	}
 
-	return &yandexalicesdk.Response{
+	return &Response{
 		Version: event.Version,
 		Session: event.Session,
-		Result: yandexalicesdk.Result{
+		Result: Result{
 			Text:       text,
 			EndSession: false,
 		},
