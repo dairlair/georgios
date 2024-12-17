@@ -10,18 +10,18 @@ run:
 build:
 	# GOOS=linux GOARCH=amd64 go build -o dist/georgios
 	# zip dist/georgios.zip dist/georgios
-	zip dist/georgios.zip parrot.go go.mod
+	zip dist/georgios.zip main.go go.mod
 
 .PHONY: deploy
 deploy: build
 	yc serverless function version create \
     	--function-name georgios \
 	    --runtime golang121 \
-    	--entrypoint parrot.ParrotHandler \
+    	--entrypoint main.Handler \
     	--memory 128m \
-    	--execution-timeout 5s \
+    	--execution-timeout 1s \
     	--environment VAR1=value1,VAR2=value2 \
     	--source-path dist/georgios.zip
-	yc serverless function invoke --name georgios --data '{"name": "Alexander"}'
+	# yc serverless function invoke --name georgios --data '{"name": "Alexander"}'
 
 

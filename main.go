@@ -4,31 +4,35 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"georgios/pkg/yandexalicesdk"
 )
 
-// The input JSON document is automatically converted to this type of object
-type Request struct {
-	Name string `json:"name"`
-}
-
-type ResponseBody struct {
-	Greetign string `json:"greeting"`
-}
-
-func Handler(ctx context.Context, request *Request) ([]byte, error) {
-	// The function logs contain the values of the invocation context and request body
-	// fmt.Println("context", ctx)
-	// fmt.Println("request", request)
-
-	// The object containing the response body is converted to an array of bytes
-	body, err := json.Marshal(&ResponseBody{
-		Greetign: fmt.Sprintf("Hello, dear %s!", request.Name),
-	})
-
+func Handler(ctx context.Context, input []byte) (*yandexalicesdk.Response, error) {
+	var event yandexalicesdk.Event
+	err := json.Unmarshal(input, &event)
 	if err != nil {
-		return nil, err
+		return &yandexalicesdk.Response{
+			Version: event.Version,
+			Session: event.Session,
+			Result: yandexalicesdk.Result{
+				Text:       fmt.Sprintf("an error has occurred when parsing event: %v", err),
+				EndSession: false,
+			},
+		}, nil
 	}
 
-	// The response body must be returned as an array of bytes
-	return body, nil
+	text := "Hello! I'll repeat anything you say to me."
+	if event.Request.OriginalUtterance != "" {
+		text = event.Request.OriginalUtterance
+	}
+
+	return &yandexalicesdk.Response{
+		Version: event.Version,
+		Session: event.Session,
+		Result: yandexalicesdk.Result{
+			Text:       text,
+			EndSession: false,
+		},
+	}, nil
 }
