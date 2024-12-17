@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"georgios/pkg/yandexalicesdk"
+	"github.com/dairlair/georgios/pkg/yandexalicesdk"
 )
 
 func Handler(ctx context.Context, input []byte) (*yandexalicesdk.Response, error) {
